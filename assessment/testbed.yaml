@@ -1,0 +1,131 @@
+testbed:
+  name: DE2022
+
+devices:
+  pnet:
+    os: linux
+    connections:
+      a:
+        protocol: ssh
+        ip: '%ENV{pnet_address_global}'
+        port: 22
+        ssh_options: -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o TCPKeepAlive=yes -o ServerAliveInterval=10
+        credentials:
+          default:
+            username: '%ENV{pnetuser}'
+            password: '%ENV{pnetpassword}'  
+        arguments:
+          connection_timeout: 15
+          learn_hostname: True
+  RTR-L:
+    os: iosxe
+    type: router
+    connections:
+      a:
+        protocol: telnet
+        ip: '%ENV{pnet_address}'
+        port: 30002
+        proxy: pnet
+        arguments:
+          connection_timeout: 15
+          learn_hostname: True
+  RTR-R:
+    os: iosxe
+    type: router
+    connections:
+      a:
+        protocol: telnet
+        ip: '%ENV{pnet_address}'
+        port: 30001     
+        proxy: pnet  
+        arguments:
+          connection_timeout: 15
+          learn_hostname: True
+  ISP:
+    os: linux
+    model: debian-11
+    connections:
+      a:
+        protocol: telnet
+        ip: '%ENV{pnet_address}'
+        port: 30003  
+        proxy: pnet
+        credentials:
+          default:
+            username: '%ENV{linuxuser}'
+            password: '%ENV{linuxpassword}'  
+        arguments:
+          connection_timeout: 15
+          learn_hostname: True
+          prompt_recovery: True
+  WEB-L:
+    os: linux
+    model: debian-11
+    connections:
+      a:
+        protocol: telnet
+        ip: '%ENV{pnet_address}'
+        port: 30004   
+        proxy: pnet    
+        credentials:
+          default:
+            username: '%ENV{linuxuser}'
+            password: '%ENV{linuxpassword}'  
+        arguments:
+          connection_timeout: 15
+          learn_hostname: True
+          prompt_recovery: True
+  WEB-R:
+    os: linux
+    model: debian-11
+    connections:
+      a:
+        protocol: telnet
+        ip: '%ENV{pnet_address}'
+        port: 30005   
+        proxy: pnet
+        credentials:
+          default:
+            username: '%ENV{linuxuser}'
+            password: '%ENV{linuxpassword}'   
+        arguments:
+          connection_timeout: 15
+          learn_hostname: True
+          prompt_recovery: True
+  CLI:
+    os: linux
+    model: win-10
+    connections:
+      a:
+        protocol: telnet
+        ip: '%ENV{pnet_address}'
+        port: 40006
+        proxy: pnet
+        credentials:
+          default:
+            username: '%ENV{winuser}'
+            password: '%ENV{winpassword}'
+        # init_exec_commands:
+        #   - powershell        
+        arguments:
+          connection_timeout: 15
+          learn_hostname: True
+  SRV:
+    os: linux
+    model: winserver-2019
+    connections:
+      a:
+        protocol: telnet
+        ip: '%ENV{pnet_address}'
+        port: 40007
+        proxy: pnet
+        credentials:
+          default:
+            username: '%ENV{winuser}'
+            password: '%ENV{winpassword}'
+        # init_exec_commands:
+        #   - powershell
+        arguments:
+          connection_timeout: 600
+          learn_hostname: True
+          prompt_recovery: True

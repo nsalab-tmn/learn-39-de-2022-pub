@@ -1,0 +1,11 @@
+- name: DNS запрос к ISP
+  code: s1
+  type: check
+  result:
+  device: SRV
+  action_chain:
+    - action: verify_output_regex
+      action_vars:
+        command: powershell -c 'Resolve-DnsName -Name isp.{l-dns-zone} | select Name,Type,IPAddress'
+        match: True
+        expr: 'isp.{l-dns-zone}\s+A\s+{isp-e0-ip}'

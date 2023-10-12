@@ -1,0 +1,25 @@
+- name: Проверка DNS-записей
+  code: s1
+  type: check
+  result:
+  device: ISP
+  action_chain:
+    - action: verify_output
+      action_vars:
+        command: dig isp.{l-dns-zone} +short A
+        tags_are_present: True
+        assert_tags:
+          - "{isp-e0-ip}"
+    - action: verify_output
+      action_vars:
+        command: dig www.{l-dns-zone} +short A
+        tags_are_present: True
+        assert_tags:
+          - "{rtr-l-g2-ip}"
+          - "{rtr-r-g2-ip}"
+    - action: verify_output
+      action_vars:
+        command: dig internet.{l-dns-zone} +short CNAME
+        tags_are_present: True
+        assert_tags:
+          - "isp.{l-dns-zone}"

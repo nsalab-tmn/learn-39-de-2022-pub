@@ -1,0 +1,37 @@
+# - name: Настройка ACL на RTR-L
+#   code: s1-setup
+#   type: config
+#   result:
+#   device: RTR-L
+#   action_chain:
+#     - action: config
+#       action_vars:
+#         commands: 
+#           - no ip access-list extended ACL_TRAFFIC_FILTER
+#           - ip access-list extended ACL_TRAFFIC_FILTER
+#           - permit gre any host {rtr-l-g2-ip}
+#           - permit esp any host {rtr-l-g2-ip}
+#           - permit udp any eq 500 host {rtr-l-g2-ip} eq 500
+#           - permit icmp any host {rtr-l-g2-ip}
+#           - permit tcp any host {rtr-l-g2-ip} eq 53
+#           - permit tcp any host {rtr-l-g2-ip} eq 80
+#           - permit tcp any host {rtr-l-g2-ip} eq 443 
+#           - permit tcp any host {rtr-l-g2-ip} eq {web-l-ssh-port}
+#           - permit tcp any host {rtr-l-g2-ip} eq 22
+#           - permit udp any host {rtr-l-g2-ip} eq 53
+#           - permit udp any eq 53 host {rtr-l-g2-ip}
+#           - permit udp any eq 123 host {rtr-l-g2-ip}
+#           - permit tcp any any established
+#           - interface g2
+#           - ip access-group ACL_TRAFFIC_FILTER in
+- name: Проверка ACE на внешнем интерфейсе RTR-L
+  code: s1
+  type: check
+  result:
+  device: RTR-L
+  action_chain:
+    - action: verify_output_regex
+      action_vars:
+        command: sh ip access-lists int g2 | i domain
+        match: True
+        expr: 'permit udp .+ (any|host {rtr-l-g2-ip}) eq.+domain'

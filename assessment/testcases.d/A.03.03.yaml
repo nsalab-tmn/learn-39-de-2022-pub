@@ -1,0 +1,59 @@
+# - name: Установка ADDS и DNS на SRV
+#   code: adds-setup
+#   type: config
+#   result:
+#   device: SRV
+#   action_chain:
+#     - action: run_shell_commands
+#       action_vars:
+#         timeout: 600
+#         commands: 
+#           - powershell -c 'Install-WindowsFeature -name AD-Domain-Services -IncludeManagementTools'
+#           - powershell -c 'Install-ADDSForest -DomainName int.demo.wsr -DomainNetBIOSName INT -InstallDNS -SafeModeAdministratorPassword $(ConvertTo-SecureString "{windows-password}" -AsPlainText -Force) -Force'
+#           #- powershell -c 'Install-WindowsFeature -Name DNS -IncludeManagementTools'
+# - name: Ожидание перезагрузки
+#   code: reconnect
+#   type: wait
+#   result:
+#   device: SRV
+#   action_chain:
+#     - action: reconnect
+#       action_vars:
+#         post_wait: 1200
+# - name: Настройка DNS на SRV
+#   code: dns-setup
+#   type: config
+#   result:
+#   device: SRV
+#   action_chain:
+#     - action: run_shell_commands
+#       action_vars:
+#         commands: 
+#         #- powershell -c 'Add-DnsServerPrimaryZone -Name "int.{l-dns-zone}" -ZoneFile "int.{l-dns-zone}.dns"'
+#         - powershell -c 'Set-DnsClientServerAddress -InterfaceIndex $(Get-NetAdapter -Name Ethernet).ifIndex -ServerAddresses ("127.0.0.1")'
+#         - powershell -c 'Add-DnsServerPrimaryZone -NetworkId "{l-net}/{default-prefix}" -ZoneFile "{l-dns-zone-db}"'
+#         - powershell -c 'Add-DnsServerPrimaryZone -NetworkId "{r-net}/{default-prefix}" -ZoneFile "{r-dns-zone-db}"'
+#         - powershell -c 'Add-DnsServerForwarder -IPAddress {isp-e0-ip}'
+#         - powershell -c 'Set-DnsServerRecursion -Enable $true'
+#     - action: run_shell_commands
+#       action_vars:
+#         commands: 
+#           - powershell -c 'Add-DnsServerResourceRecordA -IPv4Address {srv-ip} -Name srv -ZoneName int.{l-dns-zone} -CreatePtr'
+#           - powershell -c 'Add-DnsServerResourceRecordA -IPv4Address {web-l-ip} -Name web-l -ZoneName int.{l-dns-zone} -CreatePtr'
+#           - powershell -c 'Add-DnsServerResourceRecordA -IPv4Address {rtr-l-g1-ip} -Name rtr-l -ZoneName int.{l-dns-zone} -CreatePtr'
+#           - powershell -c 'Add-DnsServerResourceRecordA -IPv4Address {web-r-ip} -Name web-r -ZoneName int.{l-dns-zone} -CreatePtr'
+#           - powershell -c 'Add-DnsServerResourceRecordA -IPv4Address {rtr-r-g1-ip} -Name rtr-r -ZoneName int.{l-dns-zone} -CreatePtr'
+#           - powershell -c 'Add-DnsServerResourceRecordCname -Name {ntp-a-record} -HostNameAlias srv.int.{l-dns-zone} -ZoneName int.{l-dns-zone}'
+#           - powershell -c 'Add-DnsServerResourceRecordCname -Name dns -HostNameAlias srv.int.{l-dns-zone} -ZoneName int.{l-dns-zone}'
+- name: Проверка делегирования зоны int на ISP
+  code: s1
+  type: check
+  result:
+  device: ISP
+  action_chain:
+    - action: verify_output
+      action_vars:
+        command: dig int.{l-dns-zone} +short SOA
+        tags_are_present: True
+        assert_tags:
+          - "srv."

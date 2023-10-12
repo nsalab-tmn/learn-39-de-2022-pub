@@ -1,0 +1,11 @@
+- name: Проверка доступности приложения через HTTPS
+  code: s1
+  type: check
+  result:
+  device: CLI
+  action_chain:
+    - action: verify_output_regex
+      action_vars:
+        command: curl -k https://www.demo.wsr
+        match: True
+        expr: "Hello, fellow user, this is AppDemo0"

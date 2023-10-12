@@ -1,0 +1,73 @@
+# - name: Настройка IP-адресации G1
+#   code: s1-setup
+#   type: config
+#   result:
+#   device: RTR-L
+#   action_chain:
+#     - action: config
+#       action_vars:
+#         commands: 
+#           - interface gi1
+#           - ip address {rtr-l-g1-ip} {default-netmask}
+#           - no shut
+- name: Проверка IP-адресации G1
+  code: s1
+  type: check
+  result:
+  device: RTR-L
+  action_chain:
+    - action: verify_output
+      action_vars:
+        command: show ip int brief | i GigabitEthernet1
+        tags_are_present: True
+        assert_tags:
+          - "{rtr-l-g1-ip}"
+# - name: Настройка IP-адресации G2
+#   code: s2-setup
+#   type: config
+#   result:
+#   device: RTR-L
+#   action_chain:
+#     - action: config
+#       action_vars:
+#         commands: 
+#           - interface gi2
+#           - ip address {rtr-l-g2-ip} {default-netmask}
+#           - no shut
+- name: Проверка IP-адресации G2
+  code: s2
+  type: check
+  result:
+  device: RTR-L
+  action_chain:
+    - action: verify_output
+      action_vars:
+        command: show ip int brief | i GigabitEthernet2
+        tags_are_present: True
+        assert_tags:
+          - "{rtr-l-g2-ip}"
+# - name: Настройка маршрута по-умолчанию
+#   code: s3-setup
+#   type: config
+#   result:
+#   device: RTR-L
+#   action_chain:
+#     - action: config
+#       action_vars:
+#         commands: 
+#           - ip route 0.0.0.0 0.0.0.0 {isp-e1-ip}
+#     - action: go_sleep
+#       action_vars:
+#         seconds: '15'
+- name: Проверка маршрута по-умолчанию
+  code: s3
+  type: check
+  result:
+  device: RTR-L
+  action_chain:
+    - action: verify_output
+      action_vars:
+        command: show ip route 0.0.0.0
+        tags_are_present: True
+        assert_tags:
+          - "{isp-e1-ip}"

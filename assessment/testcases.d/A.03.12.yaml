@@ -1,0 +1,24 @@
+# - name: Настройка интерфейса e0 на WEB-L
+#   code: s1-setup
+#   type: config
+#   result:
+#   device: WEB-L
+#   action_chain:
+#     - action: run_shell_commands
+#       action_vars:
+#         commands: 
+#           - ip address add {web-l-ip}/{default-prefix} dev eth0
+#           - ip route add default via {rtr-l-g1-ip} dev eth0
+#           - echo -e 'search {l-dns-zone}\nnameserver {srv-ip}\n' > /etc/resolv.conf
+- name: DNS запрос к SRV
+  code: s1
+  type: check
+  result:
+  device: WEB-L
+  action_chain:
+    - action: verify_output
+      action_vars:
+        command: dig srv.int.{l-dns-zone} +short A
+        tags_are_present: True
+        assert_tags:
+          - "{srv-ip}"

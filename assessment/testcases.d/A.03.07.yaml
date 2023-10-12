@@ -1,0 +1,21 @@
+- name: Проверка DNS-записей в обратной зоне Left
+  code: s1
+  type: check
+  result:
+  device: SRV
+  action_chain:
+    - action: verify_output_regex
+      action_vars:
+        command: powershell -c 'Resolve-DnsName -Name {web-l-ip} | select Name,Type,NameHost'
+        match: True
+        expr: 'PTR\s+web-l.int.{l-dns-zone}'
+    - action: verify_output_regex
+      action_vars:
+        command: powershell -c 'Resolve-DnsName -Name {srv-ip} | select Name,Type,NameHost'
+        match: True
+        expr: 'PTR\s+SRV'
+    - action: verify_output_regex
+      action_vars:
+        command: powershell -c 'Resolve-DnsName -Name {rtr-l-g1-ip} | select Name,Type,NameHost'
+        match: True
+        expr: 'PTR\s+rtr-l.int.{l-dns-zone}'

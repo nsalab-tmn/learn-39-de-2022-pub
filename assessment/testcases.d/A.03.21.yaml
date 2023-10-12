@@ -1,0 +1,12 @@
+- name: Проверка количества источников времени
+  code: s1
+  type: check
+  result:
+  device: SRV
+  action_chain:
+    - action: verify_output
+      action_vars:
+        command: powershell -c 'w32tm /query /peers /verbose'
+        tags_are_present: True
+        assert_tags:
+          - "#Peers: 1"

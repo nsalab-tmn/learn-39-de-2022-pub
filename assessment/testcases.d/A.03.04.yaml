@@ -1,0 +1,26 @@
+# - name: Настройка параметров IP на CLI
+#   code: s1-setup
+#   type: config
+#   result:
+#   device: CLI
+#   action_chain:
+#     - action: run_shell_commands
+#       action_vars:
+#         timeout: 60
+#         commands: 
+#           - powershell -c 'New-NetIPAddress -IPAddress {cli-ip} -DefaultGateway {isp-e0-ip} -PrefixLength {default-prefix} -InterfaceIndex $(Get-NetAdapter -Name Ethernet).ifIndex'
+#           - "powershell -c 'Set-DnsClientServerAddress -InterfaceIndex $(Get-NetAdapter -Name Ethernet).ifIndex -ServerAddresses (\"{isp-e0-ip}\")'"
+#           - sudo su
+#           - echo 'nameserver 3.3.3.1' > /etc/resolv.conf
+#           - exit
+- name: Проверка делегирования зоны int на ISP
+  code: s1
+  type: check
+  result:
+  device: CLI
+  action_chain:
+    - action: verify_output_regex
+      action_vars:
+        command: powershell -c 'Resolve-DnsName -Name {l-dns-zone}'
+        match: True
+        expr: '{l-dns-zone}\s+SOA\s+\d+\s+Authority\s+{l-dns-zone}'

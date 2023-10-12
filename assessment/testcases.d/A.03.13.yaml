@@ -1,0 +1,11 @@
+- name: DNS запрос к SRV
+  code: s1
+  type: check
+  result:
+  device: SRV
+  action_chain:
+    - action: verify_output_regex
+      action_vars:
+        command: powershell -c 'Resolve-DnsName -Name {l-dns-zone} | select Name,Type'
+        match: True
+        expr: '{l-dns-zone}\s+SOA'

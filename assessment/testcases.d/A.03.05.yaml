@@ -1,0 +1,11 @@
+- name: Проверка наличия зоны int на SRV
+  code: s1
+  type: check
+  result:
+  device: SRV
+  action_chain:
+    - action: verify_output_regex
+      action_vars:
+        command: powershell -c 'Get-DnsServerZone -Name int.{l-dns-zone}'
+        match: True
+        expr: 'int.{l-dns-zone}\s+Primary'

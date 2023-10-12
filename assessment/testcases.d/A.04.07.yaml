@@ -1,0 +1,44 @@
+- name: Отключение внутреннего интерфейса на RTR-L
+  code: s1
+  type: check
+  result:
+  device: RTR-L
+  action_chain:
+    - action: config
+      action_vars:
+        commands: 
+          - interface g1
+          - shutdown
+- name: Ожидание времени задержки
+  code: s2
+  type: check
+  result:
+  device: RTR-L
+  action_chain:
+    - action: go_sleep
+      action_vars:
+        seconds: '{failover-timer}'
+- name: Проверка доступности приложения на CLI 
+  code: s3
+  type: check
+  result:
+  device: CLI
+  action_chain:
+    - action: verify_output
+      action_vars:
+        command: curl -k -L http://www.demo.wsr
+        tags_are_present: True
+        assert_tags:
+          - 'Hello, fellow user, this is AppDemo0!'
+    - action: verify_output
+      action_vars:
+        command: curl -k -L http://www.demo.wsr
+        tags_are_present: True
+        assert_tags:
+          - 'Hello, fellow user, this is AppDemo0!'
+    - action: verify_output
+      action_vars:
+        command: curl -k -L http://www.demo.wsr
+        tags_are_present: True
+        assert_tags:
+          - 'Hello, fellow user, this is AppDemo0!'

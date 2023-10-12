@@ -1,0 +1,103 @@
+# - name: Запрос сертификата для веб-приложения на WEB-L
+#   code: ssl-setup-01
+#   type: config
+#   result:
+#   device: WEB-L
+#   action_chain:
+#     - action: run_shell_commands
+#       action_vars:
+#         commands: 
+#           - openssl req -nodes -newkey rsa:2048 -keyout /opt/share/www.demo.wsr.key -out /opt/share/www.demo.wsr.csr -subj "/C=RU/CN=www.demo.wsr" -addext "subjectAltName = DNS:www.demo.wsr"
+# - name: Подписание сертификата для веб-приложения на SRV
+#   code: ssl-setup-02
+#   type: config
+#   result:
+#   device: SRV
+#   action_chain:
+#     - action: run_shell_commands
+#       action_vars:
+#         commands: 
+#           - powershell -c 'certreq.exe -f -q -attrib "CertificateTemplate:WebServer" {win-volume-letter}:\www.demo.wsr.csr {win-volume-letter}:\www.demo.wsr.cer'
+# - name: Копирование сертификата для веб-приложения на WEB-L
+#   code: ssl-setup-03
+#   type: config
+#   result:
+#   device: WEB-L
+#   action_chain:
+#     - action: run_shell_commands
+#       action_vars:
+#         commands: 
+#           - cp /opt/share/www.demo.wsr.key /etc/ssl/private/www.demo.wsr.key
+#           - cp /opt/share/www.demo.wsr.cer /etc/ssl/certs/www.demo.wsr.cer
+# - name: Копирование сертификата для веб-приложения на WEB-R
+#   code: ssl-setup-04
+#   type: config
+#   result:
+#   device: WEB-R
+#   action_chain:
+#     - action: run_shell_commands
+#       action_vars:
+#         commands: 
+#           - cp /opt/share/www.demo.wsr.key /etc/ssl/private/www.demo.wsr.key
+#           - cp /opt/share/www.demo.wsr.cer /etc/ssl/certs/www.demo.wsr.cer
+# - name: Настройка ngnix на WEB-L
+#   code: ssl-setup-05
+#   type: config
+#   result:
+#   device: WEB-L
+#   action_chain:
+#     - action: run_shell_commands
+#       action_vars:
+#         commands: 
+#           - echo -e 'upstream docker {obrkt}\n    server 127.0.0.1:5000 max_fails=1 fail_timeout=10s;\n    server {web-r-ip}:5000 max_fails=1 fail_timeout=10s; \n{cbrkt}\n\nserver {obrkt}\n    listen 80;\n    server_name www.demo.wsr;\n    return 301 https://$host$request_uri;\n{cbrkt}\n\nserver {obrkt}\n    server_name www.demo.wsr;\n    listen 443 ssl default_server;\n    ssl_certificate /etc/ssl/certs/www.demo.wsr.cer;\n    ssl_certificate_key /etc/ssl/private/www.demo.wsr.key;\n\n    location / {obrkt}\n        proxy_pass http://docker;\n    {cbrkt}\n\n    location /certs/ {obrkt}\n        alias /etc/ssl/certs/;\n    {cbrkt}\n{cbrkt}' > /etc/nginx/sites-available/default   
+#           - nginx -t
+#           - service nginx restart
+# - name: Настройка ngnix на WEB-R
+#   code: ssl-setup-06
+#   type: config
+#   result:
+#   device: WEB-R
+#   action_chain:
+#     - action: run_shell_commands
+#       action_vars:
+#         commands: 
+#           - echo -e 'upstream docker {obrkt}\n    server 127.0.0.1:5000 max_fails=1 fail_timeout=10s;\n    server {web-l-ip}:5000 max_fails=1 fail_timeout=10s; \n{cbrkt}\n\nserver {obrkt}\n    listen 80;\n    server_name www.demo.wsr;\n    return 301 https://$host$request_uri;\n{cbrkt}\n\nserver {obrkt}\n    server_name www.demo.wsr;\n    listen 443 ssl default_server;\n    ssl_certificate /etc/ssl/certs/www.demo.wsr.cer;\n    ssl_certificate_key /etc/ssl/private/www.demo.wsr.key;\n\n    location / {obrkt}\n        proxy_pass http://docker;\n    {cbrkt}\n\n    location /certs/ {obrkt}\n        alias /etc/ssl/certs/;\n    {cbrkt}\n{cbrkt}' > /etc/nginx/sites-available/default 
+#           - nginx -t
+#           - service nginx restart
+# - name: Найтрока трансляции на RTR-L
+#   code: nat-left-setup
+#   type: config
+#   result:
+#   device: RTR-L
+#   action_chain:
+#     - action: config
+#       action_vars:
+#         commands: 
+#           - no ip http server
+#           - no ip http secure-server
+#           - ip nat inside source static tcp {web-l-ip} 80 {rtr-l-g2-ip} 80
+#           - ip nat inside source static tcp {web-l-ip} 443 {rtr-l-g2-ip} 443
+# - name: Найтрока трансляции на RTR-R
+#   code: nat-right-setup
+#   type: config
+#   result:
+#   device: RTR-R
+#   action_chain:
+#     - action: config
+#       action_vars:
+#         commands: 
+#           - no ip http server
+#           - no ip http secure-server
+#           - ip nat inside source static tcp {web-r-ip} 80 {rtr-r-g2-ip} 80
+#           - ip nat inside source static tcp {web-r-ip} 443 {rtr-r-g2-ip} 443
+- name: Проверка доступности приложения
+  code: s1
+  type: check
+  result:
+  device: CLI
+  action_chain:
+    - action: verify_output_regex
+      action_vars:
+        command: curl -k -L http://www.demo.wsr
+        match: True
+        expr: "Hello, fellow user, this is AppDemo0"

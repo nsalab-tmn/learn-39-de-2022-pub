@@ -1,0 +1,34 @@
+obrkt: "{"
+cbrkt: "}"
+default-ping-count: 10
+default-sleep-timer: 5
+cli-ip: 3.3.3.10
+srv-ip: 192.168.100.200
+web-l-ip: 192.168.100.100
+web-r-ip: 172.16.100.100
+isp-e0-ip: 3.3.3.1
+isp-e1-ip: 4.4.4.1
+isp-e2-ip: 5.5.5.1
+rtr-l-g1-ip: 192.168.100.254
+rtr-l-g2-ip: 4.4.4.100
+rtr-r-g1-ip: 172.16.100.254
+rtr-r-g2-ip: 5.5.5.100
+l-net: 192.168.100.0
+r-net: 172.16.100.0
+tunnel-net: 172.30.255.0
+tunnel-l: 172.30.255.1
+tunnel-r: 172.30.255.2
+default-netmask: 255.255.255.0
+default-wildcard: 0.0.0.255
+default-prefix: 24
+web-l-ssh-port: 4444
+web-r-ssh-port: 3333
+stratum: 5
+l-dns-zone: demo.wsr
+l-dns-zone-db: 100.168.192.dns
+r-dns-zone-db: 100.16.172.dns
+ntp-a-record: chrony
+linux-ping-parser: 2>&1 | awk -F'/' 'END{ print (/^rtt/? "OK "$5" ms":"FAIL") }'
+skip_connections:
+  - dummy
+skiptype: config

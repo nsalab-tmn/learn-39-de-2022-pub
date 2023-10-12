@@ -1,0 +1,12 @@
+- name: Запуск ping на RTR-L
+  code: s1
+  type: check
+  result:
+  device: RTR-L
+  action_chain:
+    - action: verify_output
+      action_vars:
+        command: ping {rtr-r-g1-ip} source {rtr-l-g1-ip} repeat {default-ping-count}
+        tags_are_present: True
+        assert_tags:
+          - "!!!"

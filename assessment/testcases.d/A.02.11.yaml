@@ -1,0 +1,11 @@
+- name: Проверка ACE на внешнем интерфейсе RTR-L
+  code: s1
+  type: check
+  result:
+  device: RTR-L
+  action_chain:
+    - action: verify_output_regex
+      action_vars:
+        command: sh ip access-lists int g2 | i icmp
+        match: True
+        expr: 'permit icmp .+ (any|host {rtr-l-g2-ip})'

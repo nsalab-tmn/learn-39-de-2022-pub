@@ -1,0 +1,28 @@
+# - name: Настройка клиента NTP на RTR-R
+#   code: s1-setup
+#   type: config
+#   result:
+#   device: RTR-R
+#   action_chain:
+#     - action: config
+#       action_vars:
+#         commands: 
+#           - ntp server {srv-ip}
+- name: Проверка ассоциации с сервером времени
+  code: s1
+  type: check
+  result:
+  device: RTR-R
+  action_chain:
+    - action: verify_output
+      action_vars:
+        command: show clock detail 
+        tags_are_present: True
+        assert_tags:
+          - "Time source is NTP"
+    - action: verify_output
+      action_vars:
+        command: show ntp associations 
+        tags_are_present: True
+        assert_tags:
+          - "~{srv-ip}"

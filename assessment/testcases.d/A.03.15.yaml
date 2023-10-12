@@ -1,0 +1,23 @@
+# - name: Настройка DNS на RTR-L
+#   code: s1-setup
+#   type: config
+#   result:
+#   device: RTR-L
+#   action_chain:
+#     - action: config
+#       action_vars:
+#         commands: 
+#           - ip domain name int.{l-dns-zone}
+#           - ip name-server {srv-ip}
+- name: DNS запрос к SRV
+  code: s1
+  type: check
+  result:
+  device: RTR-L
+  action_chain:
+    - action: verify_output
+      action_vars:
+        command: ping srv.int.{l-dns-zone} rep 1
+        tags_are_present: True
+        assert_tags:
+          - "{srv-ip}"

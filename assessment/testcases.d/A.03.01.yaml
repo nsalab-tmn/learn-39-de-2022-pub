@@ -1,0 +1,28 @@
+# - name: Настройка BIND на ISP
+#   code: s1-config
+#   type: config
+#   result:
+#   device: ISP
+#   action_chain:
+#     - action: run_shell_commands
+#       action_vars:
+#         commands: 
+#           - echo -e 'zone "{l-dns-zone}" {obrkt}\n type master;\n file "/etc/bind/db.{l-dns-zone}";\n allow-query {obrkt} any; {cbrkt};\n allow-transfer {obrkt} {rtr-l-g2-ip}; {cbrkt};\n{cbrkt};' > /etc/bind/named.conf.local
+#           - echo -e '$TTL    604800  \n@   IN  SOA {l-dns-zone}.   root.{l-dns-zone}.  (\n            2           ;\n            604800      ;\n            86400       ;\n            2419200     ;\n            604800      ;\n)\n;\n@   IN  NS  isp\nint IN  NS  l-dns\n\nisp IN  A   3.3.3.1\nwww IN  A   4.4.4.100\nwww IN  A   5.5.5.100\ninternet    IN  CNAME   isp\nl-dns IN A 4.4.4.100' > /etc/bind/db.{l-dns-zone}
+#           - echo -e 'options {obrkt} \ndirectory "/var/cache/bind";\ndnssec-validation no;\nlisten-on-v6 {obrkt}  any; {cbrkt};\nallow-recursion {obrkt}  any; {cbrkt};\n{cbrkt};' > /etc/bind/named.conf.options 
+#           - echo -e 'search {l-dns-zone}\nnameserver 127.0.0.1' > /etc/resolv.conf
+#           - service bind9 restart
+#           - named-checkconf /etc/bind/named.conf
+#           - named-checkzone {l-dns-zone} /etc/bind/db.{l-dns-zone}
+- name: Проверка загрузки зоны на ISP
+  code: s1
+  type: check
+  result:
+  device: ISP
+  action_chain:
+    - action: verify_output
+      action_vars:
+        command: rndc zonestatus {l-dns-zone}
+        tags_are_present: True
+        assert_tags:
+          - 'type: master'

@@ -1,0 +1,41 @@
+- name: Проверка DNS-записей в прямой зоне
+  code: s1
+  type: check
+  result:
+  device: SRV
+  action_chain:
+    - action: verify_output_regex
+      action_vars:
+        command: powershell -c 'Resolve-DnsName -Name srv.int.{l-dns-zone} | select Name,Type,IPAddress'
+        match: True
+        expr: '[SsRrVv].int.{l-dns-zone}\s+A\s+{srv-ip}'
+    - action: verify_output_regex
+      action_vars:
+        command: powershell -c 'Resolve-DnsName -Name web-l.int.{l-dns-zone} | select Name,Type,IPAddress'
+        match: True
+        expr: 'web-l.int.{l-dns-zone}\s+A\s+{web-l-ip}'
+    - action: verify_output_regex
+      action_vars:
+        command: powershell -c 'Resolve-DnsName -Name web-r.int.{l-dns-zone} | select Name,Type,IPAddress'
+        match: True
+        expr: 'web-r.int.{l-dns-zone}\s+A\s+{web-r-ip}'
+    - action: verify_output_regex
+      action_vars:
+        command: powershell -c 'Resolve-DnsName -Name rtr-l.int.{l-dns-zone} | select Name,Type,IPAddress'
+        match: True
+        expr: 'rtr-l.int.{l-dns-zone}\s+A\s+{rtr-l-g1-ip}'
+    - action: verify_output_regex
+      action_vars:
+        command: powershell -c 'Resolve-DnsName -Name rtr-r.int.{l-dns-zone} | select Name,Type,IPAddress'
+        match: True
+        expr: 'rtr-r.int.{l-dns-zone}\s+A\s+{rtr-r-g1-ip}'
+    - action: verify_output_regex
+      action_vars:
+        command: powershell -c 'Resolve-DnsName -Name dns.int.{l-dns-zone} | select Name,Type,IPAddress'
+        match: True
+        expr: 'dns.int.{l-dns-zone}\s+CNAME\s+srv.int.{l-dns-zone}\s+A\s+{srv-ip}'
+    - action: verify_output_regex
+      action_vars:
+        command: powershell -c 'Resolve-DnsName -Name {ntp-a-record}.int.{l-dns-zone} | select Name,Type,IPAddress'
+        match: True
+        expr: '{ntp-a-record}.int.{l-dns-zone}\s+CNAME\s+srv.int.{l-dns-zone}\s+A\s+{srv-ip}'

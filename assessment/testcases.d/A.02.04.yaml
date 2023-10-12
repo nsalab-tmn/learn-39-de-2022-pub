@@ -1,0 +1,87 @@
+# - name: Настройка VPN на RTR-L
+#   code: vpn-setup-01
+#   type: config
+#   result:
+#   device: RTR-L
+#   action_chain:
+#     - action: config
+#       action_vars:
+#         commands: 
+#           - crypto isakmp policy 1
+#           - encryption aes 128
+#           - hash sha256
+#           - authentication pre-share
+#           - group 5
+#           - crypto isakmp key cisco address 0.0.0.0
+#           - crypto ipsec transform-set TSET esp-aes esp-sha256-hmac
+#           - mode transport
+#           - crypto ipsec profile IPSEC
+#           - set transform-set TSET
+#           - interface Tunnel1
+#           - ip address {tunnel-l} {default-netmask}
+#           - tunnel source g2
+#           - tunnel destination {rtr-r-g2-ip}
+#           - tunnel protection ipsec profile IPSEC
+# - name: Настройка маршрутизации на RTR-L
+#   code: vpn-setup-02
+#   type: config
+#   result:
+#   device: RTR-L
+#   action_chain:
+#     - action: config
+#       action_vars:
+#         commands: 
+#           - router eigrp 1
+#           - network {l-net}
+#           - network {tunnel-net}
+# - name: Настройка VPN на RTR-R
+#   code: vpn-setup-03
+#   type: config
+#   result:
+#   device: RTR-R
+#   action_chain:
+#     - action: config
+#       action_vars:
+#         commands: 
+#           - crypto isakmp policy 1
+#           - encryption aes 128
+#           - hash sha256
+#           - authentication pre-share
+#           - group 5
+#           - crypto isakmp key cisco address 0.0.0.0
+#           - crypto ipsec transform-set TSET esp-aes esp-sha256-hmac
+#           - mode transport
+#           - crypto ipsec profile IPSEC
+#           - set transform-set TSET
+#           - interface Tunnel1
+#           - ip address {tunnel-r} {default-netmask}
+#           - tunnel source g2
+#           - tunnel destination {rtr-l-g2-ip}
+#           - tunnel protection ipsec profile IPSEC
+# - name: Настройка маршрутизации на RTR-R
+#   code: vpn-setup-04
+#   type: config
+#   result:
+#   device: RTR-R
+#   action_chain:
+#     - action: config
+#       action_vars:
+#         commands: 
+#           - router eigrp 1
+#           - network {r-net}
+#           - network {tunnel-net}
+#     - action: go_sleep
+#       action_vars:
+#         seconds: '{default-sleep-timer}'
+- name: Проверка доступности через туннель между RTR-L и RTR-R
+  code: s1
+  type: check
+  result:
+  device: RTR-L
+  action_chain:
+    - action: verify_output
+      action_vars:
+        command: ping {rtr-r-g1-ip} source gi1 repeat {default-ping-count}
+        tags_are_present: True
+        assert_tags:
+          - "!!!"

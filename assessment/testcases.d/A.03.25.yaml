@@ -1,0 +1,16 @@
+- name: Проверка RAID на SRV
+  code: s1
+  type: check
+  result:
+  device: SRV
+  action_chain:
+    - action: run_shell_commands
+      action_vars:
+        commands: 
+          - echo -e 'list volume\n' > /mnt/c/script.txt
+          - cat /mnt/c/script.txt
+    - action: verify_output_regex
+      action_vars:
+        command: powershell -c 'diskpart /s c:\script.txt'
+        match: True
+        expr: "Volume.+{win-volume-letter}.+{win-raid-mode}"

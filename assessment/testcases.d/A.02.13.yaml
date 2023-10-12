@@ -1,0 +1,31 @@
+# - name: Настройка ACL на RTR-R
+#   code: s1-setup
+#   type: config
+#   result:
+#   device: RTR-R
+#   action_chain:
+#     - action: config
+#       action_vars:
+#         commands: 
+#           - no ip access-list extended ACL_TRAFFIC_FILTER
+#           - ip access-list extended ACL_TRAFFIC_FILTER
+#           - permit gre any host {rtr-r-g2-ip}
+#           - permit esp any host {rtr-r-g2-ip}
+#           - permit udp any eq 500 host {rtr-r-g2-ip} eq 500
+#           - permit icmp any host {rtr-r-g2-ip}
+#           - permit tcp any host {rtr-r-g2-ip} eq 53 80 443 {web-r-ssh-port} 22
+#           - permit udp any eq 53 123 host {rtr-r-g2-ip}
+#           - permit tcp any any established
+#           - interface g2
+#           - ip access-group ACL_TRAFFIC_FILTER in
+- name: Проверка ACE на внешнем интерфейсе RTR-R
+  code: s1
+  type: check
+  result:
+  device: RTR-R
+  action_chain:
+    - action: verify_output_regex
+      action_vars:
+        command: sh ip access-lists int g2 | i www
+        match: True
+        expr: 'permit tcp .+ (any|host {rtr-r-g2-ip}) eq.+www'

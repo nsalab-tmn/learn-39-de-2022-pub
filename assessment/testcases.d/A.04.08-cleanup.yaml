@@ -1,0 +1,11 @@
+- name: Включение внешнего интерфейса на RTR-L
+  code: s1
+  type: check
+  result:
+  device: RTR-L
+  action_chain:
+    - action: config
+      action_vars:
+        commands: 
+          - interface g2
+          - no shutdown

@@ -1,0 +1,25 @@
+# - name: Настройка клиента NTP на CLI
+#   code: s1-setup
+#   type: config
+#   result:
+#   device: CLI
+#   action_chain:
+#     - action: run_shell_commands
+#       action_vars:
+#         commands: 
+#           - powershell -c 'Start-Service w32time'
+#           - powershell -c 'w32tm /config /syncfromflags:manual /manualpeerlist:"{isp-e0-ip}"'
+#           - powershell -c 'Restart-Service w32time'
+#           - powershell -c 'w32tm /resync'
+- name: Проверка синхронизации времени с ISP
+  code: s1
+  type: check
+  result:
+  device: CLI
+  action_chain:
+    - action: verify_output
+      action_vars:
+        command: powershell -c 'w32tm /query /status'
+        tags_are_present: True
+        assert_tags:
+          - "Source: {isp-e0-ip}"

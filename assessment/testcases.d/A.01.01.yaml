@@ -1,0 +1,38 @@
+# - name: Настройка IP-адресации
+#   code: s1-setup
+#   type: config
+#   result:
+#   device: SRV
+#   action_chain:
+#     - action: run_shell_commands
+#       action_vars:
+#         commands: 
+#           - "powershell -c 'New-NetIPAddress -IPAddress {srv-ip} -DefaultGateway {rtr-l-g1-ip} -PrefixLength {default-prefix} -InterfaceIndex $(Get-NetAdapter -Name Ethernet).ifIndex'"
+- name: Проверка IP-адресации
+  code: s1
+  type: check
+  result:
+  device: SRV
+  action_chain:
+    - action: verify_output
+      action_vars:
+        command: "powershell -c 'Get-NetIPAddress | select IPAddress'"
+        tags_are_present: True
+        assert_tags:
+          - "{srv-ip}"
+- name: Проверка дополнительных дисков
+  code: s2
+  type: check
+  result:
+  device: SRV
+  action_chain:
+    - action: verify_output_regex
+      action_vars:
+        command: "powershell -c 'Get-PhysicalDisk | select DeviceId, @{obrkt}n={dquote}Size{dquote};e={obrkt}[math]::Round($_.Size/1GB,2){cbrkt}{cbrkt} | Where DeviceId -eq 1'"
+        match: True
+        expr: '1\s+2'
+    - action: verify_output_regex
+      action_vars:
+        command: "powershell -c 'Get-PhysicalDisk | select DeviceId, @{obrkt}n={dquote}Size{dquote};e={obrkt}[math]::Round($_.Size/1GB,2){cbrkt}{cbrkt} | Where DeviceId -eq 2'"
+        match: True
+        expr: '2\s+2'

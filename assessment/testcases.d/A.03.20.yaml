@@ -1,0 +1,12 @@
+- name: Проверка синхронизации времени с ISP
+  code: s1
+  type: check
+  result:
+  device: SRV
+  action_chain:
+    - action: verify_output
+      action_vars:
+        command: powershell -c 'w32tm /query /status'
+        tags_are_present: True
+        assert_tags:
+          - "Source: {isp-e1-ip}"

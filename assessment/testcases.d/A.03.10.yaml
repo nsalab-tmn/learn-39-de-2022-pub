@@ -1,0 +1,11 @@
+- name: Рекурсивный запрос к DNS на SRV
+  code: s1
+  type: check
+  result:
+  device: CLI
+  action_chain:
+    - action: verify_output_regex
+      action_vars:
+        command: powershell -c 'Resolve-DnsName -Name srv.int.{l-dns-zone} | select Name,Type,IPAddress'
+        match: True
+        expr: 'srv.int.{l-dns-zone}\s+A\s+{srv-ip}'

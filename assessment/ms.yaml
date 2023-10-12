@@ -1,0 +1,349 @@
+Criterions:
+  - code: A
+    name: Пуско-наладка информационной инфраструктуры
+    subCriterions:
+      - name: Виртуальные машины и коммутация
+        code: 1
+        aspects:
+          - name: "ВМ SRV: Создана в соответствии с заданием"
+            code: 1
+            description: 
+            skills: []
+            max_mark: 0.1
+            steps: !include A.01.01.yaml
+            result:
+          - name: "ВМ RTR-L: Создана в соответствии с заданием"
+            code: 2
+            description: 
+            skills: []
+            max_mark: 0.1
+            steps: !include A.01.02.yaml
+            result:
+          - name: "ВМ RTR-R: Создана в соответствии с заданием"
+            code: 3
+            description: 
+            skills: []
+            max_mark: 0.1
+            steps: !include A.01.03.yaml
+            result:
+          - name: "ВМ SRV: Коммутация выполнена"
+            code: 4
+            description: 
+            skills: []
+            max_mark: 0.1
+            steps: !include A.01.04.yaml
+            result:
+          - name: "ВМ RTR-L: Коммутация выполнена"
+            code: 5
+            description: 
+            skills: []
+            max_mark: 0.1
+            steps: !include A.01.05.yaml
+            result:
+          - name: "ВМ RTR-R: Коммутация выполнена"
+            code: 6
+            description: 
+            skills: []
+            max_mark: 0.1
+            steps: !include A.01.06.yaml
+            result:
+      - name: Сетевая связность
+        code: 2
+        aspects:
+          - name: "ISP: Внутренние сети изолированы от внешних"
+            code: 1
+            description: 
+            skills: []
+            max_mark: 0.3
+            steps: !include A.02.01.yaml
+            result:
+          - name: "RTR-L: Трансляция трафика"
+            code: 2
+            description: 
+            skills: []
+            max_mark: 0.4
+            steps: !include A.02.02.yaml
+            result:
+          - name: "RTR-R: Трансляция трафика"
+            code: 3
+            description: 
+            skills: []
+            max_mark: 0.4
+            steps: !include A.02.03.yaml
+            result:
+          - name: "Межрегиональная связь"
+            code: 4
+            description: 
+            skills: []
+            max_mark: 0.5
+            steps: !include A.02.04.yaml
+            result:
+          - name: "Защита межрегиональной связи"
+            code: 5
+            description: 
+            skills: []
+            max_mark: 0.5
+            steps: !include A.02.05.yaml
+            result:
+          - name: "Связь между сетями регионов (внутренние адреса)"
+            code: 6
+            description: 
+            skills: []
+            max_mark: 0.5
+            steps: !include A.02.06.yaml
+            result:
+          - name: "RTR-L: Подключение к портам DNS разрешено"
+            code: 7
+            description: 
+            skills: []
+            max_mark: 0.3
+            steps: !include A.02.07.yaml
+            result:
+          - name: "RTR-L: Подключение к портам HTTP разрешено"
+            code: 8
+            description: 
+            skills: []
+            max_mark: 0.3
+            steps: !include A.02.08.yaml
+            result:
+          - name: "RTR-L: Подключение к портам HTTPS разрешено"
+            code: 9
+            description: 
+            skills: []
+            max_mark: 0.3
+            steps: !include A.02.09.yaml
+            result:
+          - name: "RTR-L: Подключение к портам SSH разрешено"
+            code: 10
+            description: 
+            skills: []
+            max_mark: 0.3
+            steps: !include A.02.10.yaml
+            result:
+          - name: "RTR-L: Работа протокола ICMP разрешена"
+            code: 11
+            description: 
+            skills: []
+            max_mark: 0.3
+            steps: !include A.02.11.yaml
+            result:
+          - name: "RTR-L: Прочие подключения запрещены"
+            code: 12
+            description: 
+            skills: []
+            max_mark: 0.2
+            steps: !include A.02.12.yaml
+            result:
+          - name: "RTR-R: Подключение к порту HTTP разрешено"
+            code: 13
+            description: 
+            skills: []
+            max_mark: 0.3
+            steps: !include A.02.13.yaml
+            result:
+          - name: "RTR-R: Подключение к порту HTTPS разрешено"
+            code: 14
+            description: 
+            skills: []
+            max_mark: 0.3
+            steps: !include A.02.14.yaml
+            result:
+          - name: "RTR-R: Подключение к порту SSH разрешено"
+            code: 15
+            description: 
+            skills: []
+            max_mark: 0.3
+            steps: !include A.02.15.yaml
+            result:
+          - name: "RTR-R: Прочие подключения запрещены"
+            code: 16
+            description: 
+            skills: []
+            max_mark: 0.2
+            steps: !include A.02.16.yaml
+            result:
+          - name: "RTR-L: Трансляция порта DNS"
+            code: 17
+            description: 
+            skills: []
+            max_mark: 0.2
+            steps: !include A.02.17.yaml
+            result:
+          - name: "RTR-L: Трансляция порта SSH (к WEB-L)"
+            code: 18
+            description: 
+            skills: []
+            max_mark: 0.2
+            steps: !include A.02.18.yaml
+            result:
+          - name: "RTR-R: Трансляция порта SSH (к WEB-R)"
+            code: 19
+            description: 
+            skills: []
+            max_mark: 0.2
+            steps: !include A.02.19.yaml
+            result:
+      - name: Инфраструктурные службы
+        code: 3
+        aspects:
+          - name: "ISP: DNS-служба, demo.wsr"
+            code: 1
+            description: 
+            skills: []
+            max_mark: 0.3
+            steps: !include A.03.01.yaml
+            result:
+          - name: "ISP: Содержание зоны demo.wsr"
+            code: 2
+            description: 
+            skills: []
+            max_mark: 0.2
+            steps: !include A.03.02.yaml
+            result:
+          - name: "ISP: Делегирование зоны"
+            code: 3
+            description: 
+            skills: []
+            max_mark: 0.2
+            steps: !include A.03.03.yaml
+            result:
+          - name: "CLI: Применение DNS на ISP"
+            code: 4
+            description: 
+            skills: []
+            max_mark: 0.1
+            steps: !include A.03.04.yaml
+            result:
+          - name: "SRV: Зона int.demo.wsr"
+            code: 5
+            description: 
+            skills: []
+            max_mark: 0.3
+            steps: !include A.03.05.yaml
+            result:
+          - name: "SRV: Содержание зоны int.demo.wsr"
+            code: 6
+            description: 
+            skills: []
+            max_mark: 0.2
+            steps: !include A.03.06.yaml
+            result:
+          - name: "SRV: Обратная зона региона Left"
+            code: 7
+            description: 
+            skills: []
+            max_mark: 0.4
+            steps: !include A.03.07.yaml
+            result:
+          - name: "SRV: Обратная зона региона Right"
+            code: 8
+            description: 
+            skills: []
+            max_mark: 0.4
+            steps: !include A.03.08.yaml
+            result:
+          - name: "SRV: Прием рекурсивных запросов"
+            code: 9
+            description: 
+            skills: []
+            max_mark: 0.1
+            steps: !include A.03.09.yaml
+            result:
+          - name: "SRV: Ограничение приема рекурсивных запросов"
+            code: 10
+            description: 
+            skills: []
+            max_mark: 0.2
+            steps: !include A.03.10.yaml
+            result:
+          - name: "SRV: Перенаправление запроса на ISP"
+            code: 11
+            description: 
+            skills: []
+            max_mark: 0.2
+            steps: !include A.03.11.yaml
+            result:
+          - name: "Web-L: Применение DNS на SRV"
+            code: 12
+            description: 
+            skills: []
+            max_mark: 0.1
+            steps: !include A.03.12.yaml
+            result:
+          - name: "SRV: Применение DNS на SRV"
+            code: 13
+            description: 
+            skills: []
+            max_mark: 0.1
+            steps: !include A.03.13.yaml
+            result:
+          - name: "Web-R: Применение DNS на SRV"
+            code: 14
+            description: 
+            skills: []
+            max_mark: 0.1
+            steps: !include A.03.14.yaml
+            result:
+          - name: "RTR-L: Применение DNS на SRV"
+            code: 15
+            description: 
+            skills: []
+            max_mark: 0.1
+            steps: !include A.03.15.yaml
+            result:
+          - name: "RTR-R: Применение DNS на SRV"
+            code: 16
+            description: 
+            skills: []
+            max_mark: 0.1
+            steps: !include A.03.16.yaml
+            result:
+          - name: "ISP: Сервер времени развернут"
+            code: 17
+            description: 
+            skills: []
+            max_mark: 0.3
+            steps: !include A.03.17.yaml
+            result:
+          - name: "CLI: Сервер времени ISP используется"
+            code: 18
+            description: 
+            skills: []
+            max_mark: 0.1
+            steps: !include A.03.18.yaml
+            result:
+          - name: "SRV: Сервер времени развернут"
+            code: 19
+            description: 
+            skills: []
+            max_mark: 0.3
+            steps: !include A.03.19.yaml
+            result:
+          - name: "SRV: Синхронизация с ISP"
+            code: 20
+            description: 
+            skills: []
+            max_mark: 0.2
+            steps: !include A.03.20.yaml
+            result:
+          - name: "SRV: Разрешение на синхронизацию"
+            code: 21
+            description: 
+            skills: []
+            max_mark: 0.2
+            steps: !include A.03.21.yaml
+            result:
+          - name: "RTR-R: Синхронизация с SRV"
+            code: 22
+            description: 
+            skills: []
+            max_mark: 0.1
+            steps: !include A.03.22.yaml
+            result:
+          - name: "WEB-L: Синхронизация с SRV"
+            code: 23
+            description: 
+            skills: []
+            max_mark: 0.1
+            steps: !include A.03.23.yaml
+            result:

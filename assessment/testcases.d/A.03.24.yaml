@@ -1,0 +1,46 @@
+# - name: Настройка RAID на SRV
+#   code: raid-setup
+#   type: config
+#   result:
+#   device: SRV
+#   action_chain:
+#     - action: run_shell_commands
+#       action_vars:
+#         commands: 
+#           #- echo -e 'select disk 1\nonline disk\nattributes disk clear readonly\nconvert dynamic\nselect disk 2\nonline disk\nattributes disk clear readonly\nconvert dynamic\ncreate volume {win-raid-mode} disk=1,2\nformat fs=ntfs quick\nassign letter={win-volume-letter}' > /mnt/c/script.txt
+#           - echo -e 'select disk 1\nattributes disk clear readonly\nconvert dynamic\nselect disk 2\nattributes disk clear readonly\nconvert dynamic\ncreate volume {win-raid-mode} disk=1,2\nformat fs=ntfs quick\nassign letter={win-volume-letter}' > /mnt/c/script.txt
+#           - cat /mnt/c/script.txt
+#           - powershell -c 'diskpart /s c:\script.txt'
+# - name: Установка роли файлового сервера на SRV
+#   code: fileserver-setup
+#   type: config
+#   result:
+#   device: SRV
+#   action_chain:
+#     - action: run_shell_commands
+#       action_vars:
+#         timeout: 600
+#         commands: 
+#           - powershell -c 'Install-WindowsFeature -Name FS-Resource-Manager -IncludeManagementTools'; powershell -c 'Get-WindowsFeature -Name FS-Resource-Manager'
+# - name: Создание общей папки на SRV
+#   code: fileshare-setup
+#   type: config
+#   result:
+#   device: SRV
+#   action_chain:
+#     - action: run_shell_commands
+#       action_vars:
+#         commands: 
+#           - powershell -c 'New-SmbShare -Name {share-folder-name} -Path {win-volume-letter}:\ -FullAccess "Everyone"'
+- name: Монтирование общей папки на WEB-R
+  code: s1
+  type: check
+  result:
+  device: SRV
+  action_chain:
+    - action: verify_output
+      action_vars:
+        command: powershell -c 'Get-SmbShare'
+        tags_are_present: True
+        assert_tags:
+          - '{win-volume-letter}:\'

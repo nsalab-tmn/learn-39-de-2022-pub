@@ -1,0 +1,44 @@
+# - name: Настройка NAT на RTR-R
+#   code: s1-setup
+#   type: config
+#   result:
+#   device: RTR-R
+#   action_chain:
+#     - action: config
+#       action_vars:
+#         commands: 
+#           - interface gi1
+#           - ip nat inside 
+#           - interface gi2
+#           - ip nat outside
+#           - no ip access-list standard ACL_FOR_NAT
+#           - ip access-list standard ACL_FOR_NAT
+#           - permit {r-net} {default-wildcard}
+#           - ip nat inside source list ACL_FOR_NAT interface gi2 overload
+#     - action: go_sleep
+#       action_vars:
+#         seconds: '{default-sleep-timer}'
+- name: Проверка настройки NAT на RTR-R
+  code: s1
+  type: check
+  result:
+  device: RTR-R
+  action_chain:
+    - action: verify_output
+      action_vars:
+        command: show ip nat map
+        tags_are_present: True
+        assert_tags:
+          - "GigabitEthernet2 overload"  
+- name: Проверка доступности через NAT на RTR-R
+  code: s2
+  type: check
+  result:
+  device: RTR-R
+  action_chain:
+    - action: verify_output
+      action_vars:
+        command: ping {isp-e0-ip} source gi1 repeat {default-ping-count}
+        tags_are_present: True
+        assert_tags:
+          - "!!!"

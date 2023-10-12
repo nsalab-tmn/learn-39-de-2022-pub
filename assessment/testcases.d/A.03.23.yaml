@@ -1,0 +1,24 @@
+# - name: Настройка клиента NTP на WEB-L
+#   code: s1-setup
+#   type: config
+#   result:
+#   device: WEB-L
+#   action_chain:
+#     - action: run_shell_commands
+#       action_vars:
+#         commands: 
+#           - echo -e 'keyfile /etc/chrony/chrony.keys\ndriftfile /var/lib/chrony/chrony.drift\nlogdir /var/log/chrony\nmaxupdateskew 100.0\nrtcsync\nmakestep 1 3\nserver {srv-ip} iburst trust' > /etc/chrony/chrony.conf
+#           - service chrony restart
+#           - chronyc tracking
+- name: Проверка ассоциации с сервером времени
+  code: s1
+  type: check
+  result:
+  device: WEB-L
+  action_chain:
+    - action: verify_output
+      action_vars:
+        command: chronyc sources -v
+        tags_are_present: True
+        assert_tags:
+          - "srv.int.{l-dns-zone}"

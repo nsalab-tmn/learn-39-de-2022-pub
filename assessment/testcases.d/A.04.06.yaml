@@ -1,0 +1,11 @@
+- name: Проверка перенаправления HTTP на HTTPS
+  code: s1
+  type: check
+  result:
+  device: CLI
+  action_chain:
+    - action: verify_output_regex
+      action_vars:
+        command: curl -k -L -v http://www.demo.wsr
+        match: True
+        expr: Connected to www\.demo\.wsr.*port 443.*|\s*Hello, fellow user, this is AppDemo0

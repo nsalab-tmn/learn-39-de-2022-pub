@@ -1,0 +1,33 @@
+# - name: Монтирование общей папки на WEB-R
+#   code: s1-setup
+#   type: config
+#   result:
+#   device: WEB-R
+#   action_chain:
+#     - action: run_shell_commands
+#       action_vars:
+#         commands: 
+#           - mkdir /opt/share
+#           - mount -t cifs -o username={windows-user},password={windows-password} //{srv-ip}/share /opt/share
+- name: Проверка передачи файла с WEB-R на SRV
+  code: s1
+  type: check
+  result:
+  device: WEB-R
+  action_chain:
+    - action: run_shell_commands
+      action_vars:
+        commands: 
+          - echo 'hello from WEB-R' > /opt/share/hello-r.txt
+- name: Проверка получения файла на SRV
+  code: s2
+  type: check
+  result:
+  device: SRV
+  action_chain:
+    - action: verify_output
+      action_vars:
+        command: powershell -c 'Get-Content {win-volume-letter}:\hello-r.txt'
+        tags_are_present: True
+        assert_tags:
+          - 'hello from WEB-R'

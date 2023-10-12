@@ -1,0 +1,15 @@
+{
+    "./deploy/module.tf":	"https://github.com/nsalab-tmn/learn-39-de-2022-pub/blob/deploy-azure/module.tf?ref=main",
+    "./deploy/provider.tf":	"https://github.com/nsalab-tmn/learn-39-de-2022-pub/blob/deploy-azure/provider.tf",
+    "./deploy/vars.tf":	"https://github.com/nsalab-tmn/learn-39-de-2022-pub/blob/deploy-azure/vars.tf?ref=main",
+    "./deploy/de22/data.tf":	"https://github.com/nsalab-tmn/learn-39-de-2022-pub/blob/deploy-azure/de22/data.tf",
+    "./deploy/de22/dns.tf":	"https://github.com/nsalab-tmn/learn-39-de-2022-pub/blob/deploy-azure/de22/dns.tf",
+    "./deploy/de22/main.tf":	"https://github.com/nsalab-tmn/learn-39-de-2022-pub/blob/deploy-azure/de22/main.tf?ref=main",
+    "./deploy/de22/network.tf":	"https://github.com/nsalab-tmn/learn-39-de-2022-pub/blob/deploy-azure/de22/network.tf",
+    "./deploy/de22/outputs.tf":	"https://github.com/nsalab-tmn/learn-39-de-2022-pub/blob/deploy-azure/de22/outputs.tf?ref=main",
+    "./deploy/de22/user_data.tpl":	"https://github.com/nsalab-tmn/learn-39-de-2022-pub/blob/deploy-azure/de22/user_data.tpl",
+    "./deploy/de22/variables.tf":	"https://github.com/nsalab-tmn/learn-39-de-2022-pub/blob/deploy-azure/de22/variables.tf?ref=main",
+    "./deploy/de22/vm.tf":	"https://github.com/nsalab-tmn/learn-39-de-2022-pub/blob/deploy-azure/de22/vm.tf",
+    "./deploy/de22/web_keepalive_provider.sh":	"https://github.com/nsalab-tmn/learn-39-de-2022-pub/blob/deploy-azure/de22/web_keepalive_provider.sh",
+    "./deploy/de22/web_service.tf":	"https://github.com/nsalab-tmn/learn-39-de-2022-pub/blob/deploy-azure/de22/web_service.tf"    
+}

@@ -1,0 +1,31 @@
+# - name: Настройка NAT на RTR-L
+#   code: s1-setup
+#   type: config
+#   result:
+#   device: RTR-L
+#   action_chain:
+#     - action: config
+#       action_vars:
+#         commands: 
+#           - ip nat inside source static tcp {web-l-ip} 22 {rtr-l-g2-ip} {web-l-ssh-port}
+- name: Отправка UDP пакета на DNS-порт RTR-L
+  code: s1
+  type: check
+  result:
+  device: ISP
+  action_chain:
+    - action: run_shell_commands
+      action_vars:
+        commands: 
+          - nc -z -w 1 {rtr-l-g2-ip} {web-l-ssh-port}
+- name: Проверка трансляции на RTR-L
+  code: s2
+  type: check
+  result:
+  device: RTR-L
+  action_chain:
+    - action: verify_output_regex
+      action_vars:
+        command: sh ip nat translations tcp
+        match: True
+        expr: 'tcp\s+{rtr-l-g2-ip}:{web-l-ssh-port}\s+{web-l-ip}:22\s+{isp-e1-ip}:\d+\s+{isp-e1-ip}:\d+'

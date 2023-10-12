@@ -1,0 +1,28 @@
+# - name: Установка центра сертификации
+#   code: adcs-setup
+#   type: config
+#   result:
+#   device: SRV
+#   action_chain:
+#     - action: run_shell_commands
+#       action_vars:
+#         timeout: 700
+#         commands: 
+#           - powershell -c 'Add-WindowsFeature ADCS-cert-authority -IncludeManagementTools'
+#           - powershell -c 'Add-WindowsFeature RSAT-ADCS-mgmt -IncludeManagementTools'
+#           - powershell -c 'Install-AdcsCertificationAuthority -CACommonName SRV-CA -CAType EnterpriseRootCA  -CryptoProviderName "RSA#Microsoft Software Key Storage Provider" -KeyLength 2048  -HashAlgorithmName SHA256 -ValidityPeriod Days -ValidityPeriodUnits {cert-validity} -DatabaseDirectory c:\CertDB -LogDirectory c:\CertLog -CADistinguishedNameSuffix "O={cert-org},C={cert-country}" -Force'; powershell -c 'Get-WindowsFeature -Name ADCS-cert-authority'
+#     - action: go_sleep
+#       action_vars:
+#         seconds: '{default-sleep-timer}'
+- name: Проверка работы центра сертификации на SRV
+  code: s1
+  type: check
+  result:
+  device: SRV
+  action_chain:
+    - action: verify_output
+      action_vars:
+        command: powershell -c 'certutil -cainfo'
+        tags_are_present: True
+        assert_tags:
+          - 'CA name:'

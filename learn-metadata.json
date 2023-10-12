@@ -1,0 +1,31 @@
+{
+    "title": "Пуско-наладка информационной инфраструктуры для размещения приложения",
+    "shortName": "de22-var0",
+    "materialType": "lab",
+    "description": "Конкурсное задание для государственной промежуточной аттестации по специальности Сетевое и системное администрирование",
+    "deploy": {"$ref": "./deploy-azure/files.json" },
+    "text": { "$ref": "./README.md" },
+    "assets": { "$ref": "./assets" },
+    "assessment": { "$ref": "./assessment.json" },
+    "testcase": { "$ref": "./assessment/testcases.d" },
+    "credentialsSchema": {
+        "userName": {
+            "title": "Имя пользователя",
+            "source": "learn_user"
+        },
+        "password": {
+            "title": "Пароль",
+            "source": "learn_password"
+        },
+        "consoleURL": {
+            "title": "Адрес портала",
+            "source": "URL"
+        }
+    },
+    "duration": "PT4H00M",
+    "difficulty": 7,
+    "tags": [
+        "Демонстрационный экзамен", "Сетевое и системное администрирование"
+    ],
+    "skills": {}
+}

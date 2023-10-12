@@ -1,0 +1,52 @@
+# - name: Экспорт корневого сертификата на SRV
+#   code: root-export-01
+#   type: config
+#   result:
+#   device: SRV
+#   action_chain:
+#     - action: run_shell_commands
+#       action_vars:
+#         commands: 
+#           - powershell -c '$cert = Get-ChildItem  -Path Cert:\LocalMachine\Root\ | Where-Object {obrkt}$_.Subject -like "*{cert-org}*"{cbrkt} | Select-Object Thumbprint, Subject; $t = $cert.Thumbprint | Select-Object -First 1;  Export-Certificate -Cert "Cert:\LocalMachine\Root\$t" -FilePath {win-volume-letter}:\ca.cer'
+# - name: Копирование корневого сертификата на WEB-L
+#   code: root-export-02
+#   type: config
+#   result:
+#   device: WEB-L
+#   action_chain:
+#     - action: run_shell_commands
+#       action_vars:
+#         commands: 
+#           - cp /opt/share/ca.cer /etc/ssl/certs/ca.cer
+# - name: Копирование корневого сертификата на WEB-R
+#   code: root-export-03
+#   type: config
+#   result:
+#   device: WEB-R
+#   action_chain:
+#     - action: run_shell_commands
+#       action_vars:
+#         commands: 
+#           - cp /opt/share/ca.cer /etc/ssl/certs/ca.cer
+# - name: Импорт корневого сертификата на CLI
+#   code: root-import
+#   type: config
+#   result:
+#   device: CLI
+#   action_chain:
+#     - action: run_shell_commands
+#       action_vars:
+#         commands: 
+#           - curl -k https://www.demo.wsr/certs/ca.cer --output /mnt/c/ca.cer
+#           - powershell -c 'certutil -addstore "Root" "c:\ca.cer"'
+- name: Проверка валидности сертификата
+  code: s1
+  type: check
+  result:
+  device: CLI
+  action_chain:
+    - action: verify_output_regex
+      action_vars:
+        command: powershell -c 'Invoke-WebRequest -Uri https://www.demo.wsr -UseBasicParsing'
+        match: True
+        expr: "Hello, fellow user, this is AppDemo0"

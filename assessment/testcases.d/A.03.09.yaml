@@ -1,0 +1,12 @@
+- name: Рекурсивный запрос к DNS на SRV
+  code: s1
+  type: check
+  result:
+  device: ISP
+  action_chain:
+    - action: verify_output
+      action_vars:
+        command: dig srv.int.{l-dns-zone} +short A
+        tags_are_present: True
+        assert_tags:
+          - "{srv-ip}"

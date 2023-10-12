@@ -1,0 +1,12 @@
+- name: Проверка коммутации
+  code: s1
+  type: check
+  result:
+  device: SRV
+  action_chain:
+    - action: verify_output
+      action_vars:
+        command: ping -c{default-ping-count} {rtr-l-g1-ip} {linux-ping-parser}
+        tags_are_present: True
+        assert_tags:
+          - "OK"

@@ -1,0 +1,11 @@
+- name: Проверка параметров корневого сертификата на SRV
+  code: s1
+  type: check
+  result:
+  device: SRV
+  action_chain:
+    - action: verify_output_regex
+      action_vars:
+        command: powershell -c 'Get-ChildItem cert:\ -Recurse | Where-Object {obrkt}$_.Subject -like "*{cert-org}*"{cbrkt} | Select-Object @{obrkt}Name="NotAfter";Expression={obrkt}Get-Date -Date $_.NotAfter -Uformat "%d-%m-%Y"{cbrkt}{cbrkt}, @{obrkt}Name="Subject";Expression={obrkt}$_.Subject{cbrkt}{cbrkt},@{obrkt}Name="DaysRemaining";E={obrkt}($_.NotAfter - (Get-Date)).Days + 1{cbrkt}{cbrkt}, @{obrkt}Name="DaysCondition";E={obrkt}($_.NotAfter - (Get-Date)).Days + 1 -ge {cert-validity}{cbrkt}{cbrkt} -First 1'
+        match: True
+        expr: "O={cert-org}, C={cert-country}.+True"

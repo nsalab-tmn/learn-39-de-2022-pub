@@ -1,0 +1,18 @@
+- name: Проверка таблицы маршрутизации
+  code: s1
+  type: check
+  result:
+  device: ISP
+  action_chain:
+    - action: verify_output
+      action_vars:
+        command: ip route 
+        tags_are_present: False
+        assert_tags:
+          - "{l-net}"
+    - action: verify_output
+      action_vars:
+        command: ip route
+        tags_are_present: False
+        assert_tags:
+          - "{r-net}"
